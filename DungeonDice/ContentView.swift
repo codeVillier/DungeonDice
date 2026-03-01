@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var message = "Roll a die!"
-    private let diceTypes = [4, 6, 8, 10, 12, 12, 20, 100]
+    private let diceTypes = [4, 6, 8, 10, 12, 20, 100]
     
     var body: some View {
         VStack {
@@ -26,17 +26,18 @@ struct ContentView: View {
             
             Spacer()
             
-            Group {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))]) {
                 ForEach(diceTypes, id: \.self) { diceType in
                     Button("\(diceType)-sided") {
                         rollDie(sides: diceType)
                     }
+                    .font(.title2)
+                    .lineLimit(1)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .buttonStyle(.glassProminent)
+                    .tint(.red)
                 }
             }
-            .buttonStyle(.borderedProminent)
-            .font(.title2)
-            .tint(.red)
-            
         }
         .padding()
     }
