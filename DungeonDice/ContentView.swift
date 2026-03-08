@@ -17,6 +17,8 @@ struct ContentView: View {
     }
     
     @State private var message = "Roll a die!"
+    @State private var animationTrigger = false // changed when animation should occur
+    @State private var isDoneAnimating = true
     
     var body: some View {
         VStack {
@@ -30,12 +32,20 @@ struct ContentView: View {
             Text(message)
                 .font(.largeTitle)
                 .multilineTextAlignment(.center)
+                .rotation3DEffect(isDoneAnimating ? .degrees(360) : .degrees(0), axis: (1, 0, 0))
+                .onChange(of: animationTrigger) {
+                    isDoneAnimating = false // set to the beginning "false" state right away
+                    withAnimation(.interpolatingSpring(duration: 0.6, bounce: 0.4)) {
+                        isDoneAnimating = true
+                    }
+                }
             
             Spacer()
             
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))]) {
                 ForEach(Dice.allCases) { die in
                     Button("\(die.rawValue)-sided") {
+                        animationTrigger.toggle()
                         message = "You rolled a \(die.roll) on a \(die)-sided die."
                     }
                     .font(.title2)
@@ -48,8 +58,6 @@ struct ContentView: View {
         }
         .padding()
     }
-
-    
 }
 
 #Preview {
